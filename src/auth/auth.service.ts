@@ -1,9 +1,10 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
+
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 
 import { UsersService } from '../users/users.service';
-import { RegisterDto } from './dto/register.dto';
+
 import { LoginDto } from './dto/login.dto';
 
 @Injectable()
@@ -13,31 +14,6 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async register(data: RegisterDto) {
-    const existingUser = await this.usersService.findByEmail(data.email);
-
-    if (existingUser) {
-      throw new UnauthorizedException('User with this email already exists');
-    }
-
-    const role = await this.usersService.findRoleByCode('WAREHOUSE');
-
-    const passwordHash = await bcrypt.hash(data.password, 10);
-
-    const user = await this.usersService.create({
-      name: data.name,
-      email: data.email,
-      passwordHash,
-      roleId: role.id,
-    });
-
-    const { passwordHash: removedPasswordHash, ...result } = user;
-
-    void removedPasswordHash;
-
-    return result;
-  }
-
   async login(data: LoginDto) {
     const user = await this.usersService.findByEmail(data.email);
 
@@ -45,20 +21,22 @@ export class AuthService {
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    const isPasswordValid = await bcrypt.compare(
+    const passwordValid = await bcrypt.compare(
       data.password,
       user.passwordHash,
     );
 
-    if (!isPasswordValid) {
+    if (!passwordValid) {
       throw new UnauthorizedException('Invalid credentials');
     }
+
+    const role = await this.usersService.findRoleById(user.roleId);
 
     return {
       accessToken: this.jwtService.sign({
         sub: user.id,
         email: user.email,
-        roleId: user.roleId,
+        role: role.code,
       }),
     };
   }
