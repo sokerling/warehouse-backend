@@ -9,6 +9,8 @@ import {
   UseGuards,
 } from '@nestjs/common';
 
+import { ApiBearerAuth } from '@nestjs/swagger';
+
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
@@ -19,6 +21,7 @@ import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 
 @Controller('products')
+@ApiBearerAuth()
 @UseGuards(JwtAuthGuard, RolesGuard)
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
@@ -26,6 +29,11 @@ export class ProductsController {
   @Get()
   findAll() {
     return this.productsService.findAll();
+  }
+
+  @Get(':id/balance')
+  getBalance(@Param('id') id: string) {
+    return this.productsService.getBalance(id);
   }
 
   @Get(':id')

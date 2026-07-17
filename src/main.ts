@@ -14,15 +14,19 @@ async function bootstrap() {
   );
 
   const config = new DocumentBuilder()
-    .setTitle('Cats example')
-    .setDescription('The cats API description')
+    .setTitle('Inventory API')
+    .setDescription('Inventory management system API')
     .setVersion('1.0')
-    .addTag('cats')
+    .addBearerAuth()
     .build();
+
   const documentFactory = () => SwaggerModule.createDocument(app, config);
+
   SwaggerModule.setup('api', app, documentFactory);
 
-  await app.listen({ port: 3000 });
+  await app.listen({
+    port: 3000,
+  });
 }
 
 void bootstrap();
