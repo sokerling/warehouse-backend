@@ -74,4 +74,32 @@ export class ProductsService {
       message: 'Product deleted',
     };
   }
+
+  async getBalance(id: string) {
+    await this.findOne(id);
+
+    const operations = await this.database.db
+      .selectFrom('operations')
+      .innerJoin(
+        'operationTypes',
+        'operationTypes.id',
+        'operations.operationTypeId',
+      )
+      .select(['operationTypes.code', 'operations.quantity'])
+      .where('operations.productId', '=', id)
+      .execute();
+
+    const balance = operations.reduce((sum, operation) => {
+      if (operation.code === 'INCOME') {
+        return sum + operation.quantity;
+      }
+
+      return sum - operation.quantity;
+    }, 0);
+
+    return {
+      productId: id,
+      balance,
+    };
+  }
 }

@@ -1,5 +1,7 @@
 import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
 
+import { ApiBearerAuth } from '@nestjs/swagger';
+
 import type { Request } from 'express';
 
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -10,6 +12,7 @@ import { OperationsService } from './operations.service';
 import { CreateOperationDto } from './dto/create-operation.dto';
 
 @Controller('operations')
+@ApiBearerAuth()
 @UseGuards(JwtAuthGuard, RolesGuard)
 export class OperationsController {
   constructor(private readonly operationsService: OperationsService) {}
