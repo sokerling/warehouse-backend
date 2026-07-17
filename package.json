@@ -22,7 +22,8 @@
     "db:migrate:down": "kysely migrate down",
     "db:migrate:make": "kysely migrate make",
     "db:codegen": "kysely-codegen --env-file .env --out-file src/database/database.types.ts --camel-case",
-    "prepare": "husky"
+    "prepare": "husky",
+    "db:create-admin": "tsx src/database/scripts/create-admin.ts"
   },
   "lint-staged": {
     "*.ts": [
@@ -31,11 +32,17 @@
     ]
   },
   "dependencies": {
+    "@fastify/static": "^9.3.0",
     "@nestjs/common": "^11.0.1",
     "@nestjs/config": "^4.0.4",
     "@nestjs/core": "^11.0.1",
+    "@nestjs/jwt": "^11.0.2",
     "@nestjs/platform-express": "^11.0.1",
     "@nestjs/platform-fastify": "^11.1.27",
+    "@nestjs/swagger": "^11.4.5",
+    "bcrypt": "^6.0.0",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.15.1",
     "fastify": "^5.9.0",
     "kysely": "^0.29.3",
     "pg": "^8.22.0",
@@ -50,9 +57,11 @@
     "@nestjs/cli": "^11.0.0",
     "@nestjs/schematics": "^11.0.0",
     "@nestjs/testing": "^11.0.1",
+    "@types/bcrypt": "^6.0.0",
     "@types/express": "^5.0.0",
     "@types/jest": "^30.0.0",
     "@types/node": "^24.0.0",
+    "@types/passport-jwt": "^4.0.1",
     "@types/pg": "^8.20.0",
     "@types/supertest": "^7.0.0",
     "eslint": "^9.18.0",
@@ -71,6 +80,7 @@
     "ts-loader": "^9.5.2",
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
+    "tsx": "^4.23.0",
     "typescript": "^5.7.3",
     "typescript-eslint": "^8.20.0"
   },
