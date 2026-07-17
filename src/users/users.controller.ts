@@ -10,18 +10,17 @@ import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 
 @Controller('users')
+@UseGuards(JwtAuthGuard, RolesGuard)
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Get('me')
-  @UseGuards(JwtAuthGuard)
   getMe(@Req() req: Request) {
     return req.user;
   }
 
   @Post()
   @Roles('ADMIN')
-  @UseGuards(JwtAuthGuard, RolesGuard)
   async create(@Body() data: CreateUserDto) {
     return this.usersService.createByAdmin(data);
   }
